@@ -1,3 +1,6 @@
+import streamlit as st
+
+
 def split_array(arr, n):
     """
     Splits the contents of an array into several smaller arrays.
@@ -156,36 +159,38 @@ def print_grid(grid):
 
 
 def main():
+    st.title("Sudoku Solver")
+
     grid = []
     for i in range(9):
-        row = input(f"Please enter the {i + 1} row in the sudoku grid entering zero for any empty spaces, and be sure to include a space in between each number. If you would like to use the test grid, please type TEST: \n")
-        print()
-        if row.strip().upper() == "TEST":
-            grid = [[3, 0, 6, 5, 0, 8, 4, 0, 0],
-                    [5, 2, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 8, 7, 0, 0, 0, 0, 3, 1],
-                    [0, 0, 3, 0, 1, 0, 0, 8, 0],
-                    [9, 0, 0, 8, 6, 3, 0, 0, 5],
-                    [0, 5, 0, 0, 9, 0, 6, 0, 0],
-                    [1, 3, 0, 0, 0, 0, 2, 5, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 7, 4],
-                    [0, 0, 5, 2, 0, 6, 3, 0, 0]]
-            print("\nusing test grid: here is the grid that will be used - ")
-            print_grid(grid)
-            print()
-            break
+        row = st.text_input(f"Enter row {i + 1} (use spaces between numbers, 0 for empty):", key=f"row_{i}")
+        if row:
+            try:
+                grid.append([int(num) for num in row.split()])
+            except ValueError:
+                st.error("Please enter valid numbers separated by spaces.")
 
+    if st.button("Use Test Grid"):
+        grid = [
+            [3, 0, 6, 5, 0, 8, 4, 0, 0],
+            [5, 2, 0, 0, 0, 0, 0, 0, 0],
+            [0, 8, 7, 0, 0, 0, 0, 3, 1],
+            [0, 0, 3, 0, 1, 0, 0, 8, 0],
+            [9, 0, 0, 8, 6, 3, 0, 0, 5],
+            [0, 5, 0, 0, 9, 0, 6, 0, 0],
+            [1, 3, 0, 0, 0, 0, 2, 5, 0],
+            [0, 0, 0, 0, 0, 0, 0, 7, 4],
+            [0, 0, 5, 2, 0, 6, 3, 0, 0]
+        ]
+        st.success("Test grid loaded!")
 
-        row = row.strip()
-        row = row.split()
-        for j, num in enumerate(row):
-            row[j] = int(num)
-            
-        grid.append(row)
-        
-    new_grid = (solve_sudoku(grid)[0])
-    print("Here is the solution -")
-    print_grid(new_grid)
+    if len(grid) == 9:
+        st.write("Here is your Sudoku grid:")
+        st.write(grid)
+        # Call your solver function here
+        # solved_grid = solve_sudoku(grid)
+        # st.write("Solved Sudoku:")
+        # st.write(solved_grid)
 
-if __name__ == "__main__":       
+if __name__ == "__main__":
     main()
